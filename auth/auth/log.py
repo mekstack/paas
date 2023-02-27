@@ -1,6 +1,7 @@
 from logging.config import dictConfig
 
 
+# TODO copy openstack logger configuration
 def configure_logging():
     dictConfig(
         {
