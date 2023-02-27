@@ -1,7 +1,7 @@
 from logging.config import dictConfig
 
 
-def configure_default_logger():
+def configure_logging():
     dictConfig(
         {
             "version": 1,
@@ -11,12 +11,16 @@ def configure_default_logger():
                 }
             },
             "handlers": {
-                "wsgi": {
+                "default": {
+                    "level": "INFO",
                     "class": "logging.StreamHandler",
-                    "stream": "ext://flask.logging.wsgi_errors_stream",
+                    "stream": "ext://sys.stdout",
                     "formatter": "default",
                 }
             },
-            "root": {"level": "INFO", "handlers": ["wsgi"]},
+            "loggers": {
+                "root": {"level": "INFO", "handlers": ["default"]},
+                "auth.util": {"level": "INFO"},
+            },
         }
     )

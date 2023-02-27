@@ -1,16 +1,18 @@
 import datetime
+import logging
 
 import jwt
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, logging, make_response, redirect, url_for
+from flask import Flask, make_response, redirect, url_for
 
-from auth.log import configure_default_logger
+from auth.log import configure_logging
 from auth.util import is_user_authorized, register_oauth_providers_from_config
 
-configure_default_logger()
-
 app = Flask("auth")
-app.logger = logging.create_logger(app)
+
+configure_logging()
+log = logging.getLogger("auth")
+
 app.config.from_prefixed_env()
 app.config.from_object("config")
 
@@ -33,9 +35,9 @@ def auth(provider):
     userinfo = token["userinfo"]
 
     if is_user_authorized(userinfo, provider, app.config):
-        app.logger.info("Login success for user %s", userinfo["email"])
+        log.info("Login success for user %s", userinfo["email"])
     else:
-        app.logger.info("Login failure for user %s", userinfo["email"])
+        log.info("Login failure for user %s", userinfo["email"])
         return "403 Forbidden", 403
 
     jwt_token = jwt.encode(
