@@ -39,5 +39,12 @@ def auth(provider):
 
     user_jwt = util.generate_user_jwt(userinfo, app.config)
     response = make_response(redirect("/"))
-    response.set_cookie("accessToken", user_jwt)
+    response.set_cookie(
+        "accessToken",
+        user_jwt,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        max_age=app.config["JWT_MAX_AGE_SECONDS"],
+    )
     return response
