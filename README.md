@@ -36,6 +36,12 @@ Configuration is performed by setting following variables.
 
 Example configuration can be seen in .flaskenv file.
 
+#### Run tests
+
+    cd auth
+    source (poetry env info --path)/bin/activate.fish
+    pytest
+
 ## Development
 
 To init a new service do
