@@ -7,8 +7,6 @@ log = logging.getLogger("auth.util")
 
 
 def register_oauth_providers_from_config(oauth, config):
-    config["OAUTH_REGISTERED_PROVIDERS"] = []
-
     if config.get("OAUTH_PROVIDERS") is None:
         log.error("OAUTH_PROVIDERS is not defined")
         return
@@ -22,7 +20,6 @@ def register_oauth_providers_from_config(oauth, config):
                 server_metadata_url=config[f"{provider.upper()}_METADATA_URL"],
                 client_kwargs={"scope": "openid email profile"},
             )
-            config["OAUTH_REGISTERED_PROVIDERS"] += provider
             log.info("Registered OAuth provider %s", provider)
         except KeyError as err:
             log.error("Failed to register OAuth provider %s", provider, exc_info=err)

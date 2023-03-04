@@ -19,16 +19,21 @@ util.register_oauth_providers_from_config(oauth, app.config)
 
 @app.route("/login/<provider>")
 def login(provider):
-    if provider not in app.config["OAUTH_REGISTERED_PROVIDERS"]:
+    client = oauth.create_client(provider)
+    if client is None:
         return "501 Not implemented", 501
 
     redirect_uri = url_for("auth", provider=provider, _external=True)
-    return oauth.create_client(provider).authorize_redirect(redirect_uri)
+    return client.authorize_redirect(redirect_uri)
 
 
 @app.route("/auth/<provider>")
 def auth(provider):
-    token = oauth.create_client(provider).authorize_access_token()
+    client = oauth.create_client(provider)
+    if client is None:
+        return "501 Not implemented", 501
+
+    token = client.authorize_access_token()
     userinfo = token["userinfo"]
 
     if util.is_user_authorized(userinfo, provider, app.config):
