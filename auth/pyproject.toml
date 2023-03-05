@@ -85,7 +85,7 @@ expected-line-ending-format = "LF"
 ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
 indent-after-paren = 4
 indent-string = "    "
-max-line-length = 120
+max-line-length = 88
 max-module-lines = 1000
 
 [tool.pylint."messages control"]
