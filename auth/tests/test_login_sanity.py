@@ -1,8 +1,9 @@
 # pylint: disable=too-few-public-methods
 import jwt
 import pytest
-from auth.app import app, oauth
 from werkzeug.http import parse_cookie
+
+from auth.app import app, oauth
 
 
 class MockOAuthClient:
