@@ -1,42 +1,30 @@
-import datetime
 import logging
-
-import jwt
+import logging.config
 
 log = logging.getLogger("auth.util")
 
 
-def register_oauth_providers_from_config(oauth, config):
-    if config.get("OAUTH_PROVIDERS") is None:
-        log.error("OAUTH_PROVIDERS is not defined")
-        return
-
-    for provider in config.get("OAUTH_PROVIDERS"):
-        try:
-            oauth.register(
-                name=provider,
-                client_id=config[f"{provider.upper()}_CLIENT_ID"],
-                client_secret=config[f"{provider.upper()}_CLIENT_SECRET"],
-                server_metadata_url=config[f"{provider.upper()}_METADATA_URL"],
-                client_kwargs={"scope": "openid email profile"},
-            )
-            log.info("Registered OAuth provider %s", provider)
-        except KeyError as err:
-            log.error("Failed to register OAuth provider %s", provider, exc_info=err)
-
-
-def generate_user_jwt(userinfo, config):
-    return jwt.encode(
+# TODO: copy openstack logger configuration
+def setup_logging():
+    logging.config.dictConfig(
         {
-            "email": userinfo["email"],
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10),
-        },
-        config["JWT_SECRET_KEY"],
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+                }
+            },
+            "handlers": {
+                "default": {
+                    "level": "INFO",
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                }
+            },
+            "loggers": {
+                "root": {"level": "INFO", "handlers": ["default"]},
+                "auth.util": {"level": "INFO"},
+            },
+        }
     )
-
-
-def is_user_authorized(userinfo, provider, config):
-    if provider == "google":
-        if userinfo.get("hd") != config["GOOGLE_AUTHORIZE_PARAMS"]["hd"]:
-            return False
-    return True
