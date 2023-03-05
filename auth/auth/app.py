@@ -23,12 +23,12 @@ def login(provider):
     if client is None:
         return "501 Not implemented", 501
 
-    redirect_uri = url_for("auth", provider=provider, _external=True)
-    return client.authorize_redirect(redirect_uri)
+    url = url_for("redirect_uri", provider=provider, _external=True)
+    return client.authorize_redirect(url)
 
 
-@app.route("/auth/<provider>")
-def auth(provider):
+@app.route("/redirect_uri/<provider>")
+def redirect_uri(provider):
     client = oauth.create_client(provider)
     if client is None:
         return "501 Not implemented", 501

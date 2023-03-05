@@ -60,20 +60,20 @@ def mock_flask_config():
 
 
 def test_login_basic():
-    response = app.test_client().get("/auth/basic")
+    response = app.test_client().get("/redirect_uri/basic")
 
     assert response.status_code == 302
 
 
 def test_login_logging(caplog):
-    app.test_client().get("/auth/basic")
+    app.test_client().get("/redirect_uri/basic")
 
     assert "Login success for user test@gmail.com" in caplog.text
 
 
 def test_login_google(caplog):
     app.config["GOOGLE_AUTHORIZE_PARAMS"] = {"hd": "test.hd"}
-    response = app.test_client().get("/auth/google")
+    response = app.test_client().get("/redirect_uri/google")
 
     assert response.status_code == 302
     assert "Login success for user test@gmail.com" in caplog.text
@@ -81,14 +81,14 @@ def test_login_google(caplog):
 
 def test_login_google_fail(caplog):
     app.config["GOOGLE_AUTHORIZE_PARAMS"] = {"hd": "not.test.hd"}
-    response = app.test_client().get("/auth/google")
+    response = app.test_client().get("/redirect_uri/google")
 
     assert response.status_code == 403
     assert "Login failure for user test@gmail.com" in caplog.text
 
 
 def test_login_jwt():
-    response = app.test_client().get("/auth/basic")
+    response = app.test_client().get("/redirect_uri/basic")
     cookies = response.headers.getlist("Set-Cookie")
     jwt_cookie = next((cookie for cookie in cookies if "accessToken" in cookie), None)
 
