@@ -2,16 +2,11 @@
 
 Service as a Service services
 
-## Installation
+## Services
 
-Python dependencies are tracked with poetry. To install dependencies run
+### Blau
 
-    poetry install
-    poetry update
-
-## Microservices
-
-### Auth
+> **Bl**azingly fast **Au**th
 
 Provides an HTTP endpoint `/login/<provider>` that authorizes user via OAuth
 provider and returns a signed JWT token.
@@ -34,16 +29,7 @@ Configuration is performed by setting following variables.
 
 -   **FLASK_JWT_SECRET_KEY**: string for JWT signing
 
-Example configuration can be seen in .flaskenv file.
-
 #### Run tests
 
     cd auth
-    source (poetry env info --path)/bin/activate.fish
-    pytest
-
-## Development
-
-To init a new service do
-
-    poetry new <service name>
+    cargo test
