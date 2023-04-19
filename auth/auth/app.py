@@ -39,7 +39,7 @@ def redirect_uri():
     def create_jwt(email):
         return jwt.encode(
             {
-                "email": email.split("@")[0],
+                "username": email.split("@")[0],
                 "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10),
             },
             app.config["JWT_SECRET_KEY"],
