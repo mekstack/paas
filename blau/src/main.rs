@@ -1,6 +1,7 @@
 mod config;
 mod jwt;
 mod routes;
+mod tests;
 
 use actix_session::{storage::CookieSessionStore, SessionMiddleware};
 use actix_web::{web, App, HttpServer};

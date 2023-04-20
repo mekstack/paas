@@ -1,9 +1,9 @@
 const JWT_TTL_SECONDS: u64 = 600;
 
-#[derive(serde::Serialize)]
-struct Claims {
-    username: String,
-    exp: u64,
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Claims {
+    pub username: String,
+    pub exp: u64,
 }
 
 #[derive(Clone)]
