@@ -95,6 +95,8 @@ async fn redirect_uri(
         .ok_or(ServerError("Failed to extract username from email"))?
         .to_string();
 
+    log::info!("User '{}' logged in successfully", username);
+
     let access_token = jwt
         .encode(username)
         .map_err(|e| ServerError(format!("Failed to encode JWT: {}", e)))?;

@@ -15,6 +15,8 @@ use routes::{login, redirect_uri};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init();
+
     let config = Config::from_env();
     let jwt = jwt::JwtEncoder::new(config.jwt_secret_key);
 
@@ -22,6 +24,7 @@ async fn main() -> std::io::Result<()> {
         CoreProviderMetadata::discover_async(config.issuer_url, async_http_client)
             .await
             .expect("Provider metadata discovery failed");
+    log::info!("Provider metadata successfully discovered");
 
     let client = CoreClient::from_provider_metadata(
         provider_metadata,
@@ -29,6 +32,9 @@ async fn main() -> std::io::Result<()> {
         config.client_secret,
     );
 
+    let server_url = format!("0.0.0.0:{}", config.server_port);
+
+    log::info!("Starting actix server on {}", server_url);
     HttpServer::new(move || {
         App::new()
             .wrap(SessionMiddleware::new(
@@ -40,7 +46,7 @@ async fn main() -> std::io::Result<()> {
             .service(login)
             .service(redirect_uri)
     })
-    .bind(format!("0.0.0.0:{}", config.server_port))?
+    .bind(server_url)?
     .run()
     .await
 }
