@@ -4,32 +4,23 @@ Service as a Service services
 
 ## Services
 
-### Blau
+### Blau: **Bl**azingly fast **Au**th
 
-> **Bl**azingly fast **Au**th
-
-Provides an HTTP endpoint `/login/<provider>` that authorizes user via OAuth
-provider and returns a signed JWT token.
+Provides an HTTP endpoint `/login` that authorizes user via OAuth provider and
+sets a cookie with a signed JWT token that can be used to access microservices.
 
 #### Configuration
 
-Configuration is performed by setting following variables.
+Configuration is performed by setting following environment variables:
 
--   **FLASK_OAUTH_PROVIDERS**: list of provider names.
-
-    Example: `FLASK_OAUTH_PROVIDERS = ["google", "keycloak"]`
-
-    Each OAuth provider is configured with env variables formatted as
-    **`FLASK_{provider_name}_{option}`**.
-    **`provider_name` must be uppercase**.
-    Required `option`s are `CLIENT_ID`, `CLIENT_SECRET` and `METADATA_URL`.
-    Example: ` FLASK_GOOGLE_CLIENT_ID = client_id`
-
--   **FLASK_SECRET_KEY**: string that sets app.secret_key
-
--   **FLASK_JWT_SECRET_KEY**: string for JWT signing
+-   `BLAU_PORT`: port for web server to listen on
+-   `CLIENT_ID`: OpenID client id
+-   `CLIENT_SECRET`: OpenID client secret
+-   `ISSUER_URL`: OpenID issuer url
+-   `JWT_SECRET_KEY`: key for signing JWTs
+-   `SECRET_KEY`: key for session persistence Cookie encryption
 
 #### Run tests
 
-    cd auth
+    cd blau
     cargo test
