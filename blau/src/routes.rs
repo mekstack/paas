@@ -2,7 +2,6 @@ use std::borrow::Cow;
 
 use actix_session::Session;
 use actix_web::{
-    cookie::{time::Duration, CookieBuilder, SameSite},
     error::{ErrorForbidden as Forbidden, ErrorInternalServerError as ServerError},
     get, web, HttpRequest, HttpResponse,
 };
@@ -45,6 +44,11 @@ async fn login(
 pub struct RedirectUriPayload {
     code: String,
     state: String,
+}
+
+#[derive(serde::Serialize)]
+pub struct JWTResponse {
+    access_token: String,
 }
 
 #[get("/redirect_uri")]
@@ -101,15 +105,7 @@ async fn redirect_uri(
         .encode(username)
         .map_err(|e| ServerError(format!("Failed to encode JWT: {}", e)))?;
 
-    Ok(HttpResponse::TemporaryRedirect()
-        .append_header(("Location", "/"))
-        .cookie(
-            CookieBuilder::new("accessToken", access_token)
-                .http_only(true)
-                .secure(true)
-                .same_site(SameSite::Lax)
-                .max_age(Duration::minutes(10))
-                .finish(),
-        )
-        .finish())
+    let response = JWTResponse { access_token };
+
+    Ok(HttpResponse::Ok().json(response))
 }
