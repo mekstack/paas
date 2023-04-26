@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blau
+  namespace: saas
 spec:
   replicas: 1
   selector:
@@ -14,46 +15,73 @@ spec:
     spec:
       containers:
       - name: blau
-        image: vpnaas/blau:latest
+        image: mekstack/blau:latest
         imagePullPolicy: Never
         ports:
         - containerPort: 80
         env:
         - name: RUST_LOG
           value: info
+        - name: REDIRECT_URLS
+          value: >-
+            https://vpnaas.mekstack.ru/
+            https://nataas.mekstack.ru/
         - name: CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name: mekstack-secret
-              key: blau-client-id
+              name: blau
+              key: client-id
         - name: CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: mekstack-secret
-              key: blau-client-secret
+              name: blau
+              key: client-secret
         - name: ISSUER_URL
           valueFrom:
             secretKeyRef:
-              name: mekstack-secret
-              key: blau-issuer-url
+              name: blau
+              key: issuer-url
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: mekstack-secret
-              key: blau-secret-key
+              name: blau
+              key: secret-key
         - name: JWT_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: mekstack-secret
+              name: mekstack
               key: jwt-secret-key
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: blau
+  namespace: saas
 spec:
   selector:
     app: blau
   ports:
   - protocol: TCP
     port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth
+  namespace: saas
+spec:
+  tls:
+  - hosts:
+    - auth.mekstack.ru
+    secretName: auth-tls
+  rules:
+  - host: auth.mekstack.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: blau
+            port:
+              number: 80

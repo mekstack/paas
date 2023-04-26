@@ -2,6 +2,7 @@ mod config;
 mod jwt;
 mod routes;
 mod tests;
+mod util;
 
 use actix_session::{storage::CookieSessionStore, SessionMiddleware};
 use actix_web::{web, App, HttpServer};
@@ -18,12 +19,14 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     let config = Config::from_env();
+    let util = util::Util::new(config.redirect_urls);
     let jwt = jwt::JwtEncoder::new(config.jwt_secret_key);
 
     let provider_metadata =
         CoreProviderMetadata::discover_async(config.issuer_url, async_http_client)
             .await
             .expect("Provider metadata discovery failed");
+
     log::info!("Provider metadata successfully discovered");
 
     let client = CoreClient::from_provider_metadata(
@@ -41,6 +44,7 @@ async fn main() -> std::io::Result<()> {
                 CookieSessionStore::default(),
                 config.secret_key.clone(),
             ))
+            .app_data(web::Data::new(util.clone()))
             .app_data(web::Data::new(client.clone()))
             .app_data(web::Data::new(jwt.clone()))
             .service(login)

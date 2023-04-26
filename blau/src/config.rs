@@ -9,6 +9,7 @@ pub struct Config {
     pub issuer_url: IssuerUrl,
     pub secret_key: cookie::Key,
     pub server_port: String,
+    pub redirect_urls: Vec<String>,
 }
 
 impl Config {
@@ -20,6 +21,11 @@ impl Config {
             issuer_url: IssuerUrl::new(get_env_var("ISSUER_URL")).unwrap(),
             jwt_secret_key: get_env_var("JWT_SECRET_KEY"),
             secret_key: cookie::Key::from(get_env_var("SECRET_KEY").as_bytes()),
+            redirect_urls: get_env_var("REDIRECT_URLS")
+                .split_whitespace()
+                .filter(|url| !url.is_empty())
+                .map(|url| url.to_string())
+                .collect::<Vec<String>>(),
         }
     }
 }

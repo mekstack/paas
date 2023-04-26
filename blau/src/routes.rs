@@ -12,12 +12,19 @@ use openidconnect::{
     AuthorizationCode, CsrfToken, Nonce, RedirectUrl, Scope, TokenResponse,
 };
 
-use crate::jwt::JwtEncoder;
+use crate::{jwt::JwtEncoder, util::Util};
+
+#[derive(serde::Deserialize)]
+pub struct LoginPayload {
+    redirect_back_url: Option<String>,
+}
 
 #[get("/login")]
 async fn login(
     req: HttpRequest,
+    params: web::Query<LoginPayload>,
     client: web::Data<CoreClient>,
+    util: web::Data<Util>,
     session: Session,
 ) -> Result<HttpResponse, actix_web::Error> {
     let redirect_url = RedirectUrl::from_url(req.url_for_static("redirect_uri")?);
@@ -34,6 +41,11 @@ async fn login(
 
     session.insert("csrf_state", csrf_state.clone())?;
     session.insert("nonce", nonce.clone())?;
+
+    session.insert(
+        "redirect_back_url",
+        util.get_redirect_back_url(params.redirect_back_url.clone())?,
+    )?;
 
     Ok(HttpResponse::TemporaryRedirect()
         .append_header(("Location", authorize_url.to_string()))
@@ -57,6 +69,7 @@ async fn redirect_uri(
     params: web::Query<RedirectUriPayload>,
     jwt: web::Data<JwtEncoder>,
     client: web::Data<CoreClient>,
+    util: web::Data<Util>,
     session: Session,
 ) -> Result<HttpResponse, actix_web::Error> {
     if let Some(stored_state) = session.get::<String>("csrf_state")? {
@@ -69,6 +82,8 @@ async fn redirect_uri(
 
     let code = AuthorizationCode::new(params.code.clone());
     let redirect_url = RedirectUrl::from_url(req.url_for_static("redirect_uri")?);
+    let redirect_back_url =
+        util.get_redirect_back_url(session.get::<String>("redirect_back_url")?)?;
 
     let token_response = client
         .exchange_code(code)
@@ -105,7 +120,10 @@ async fn redirect_uri(
         .encode(username)
         .map_err(|e| ServerError(format!("Failed to encode JWT: {}", e)))?;
 
-    let response = JWTResponse { access_token };
-
-    Ok(HttpResponse::Ok().json(response))
+    Ok(HttpResponse::TemporaryRedirect()
+        .append_header((
+            "Location",
+            format!("{}#access_token={}", redirect_back_url, access_token),
+        ))
+        .finish())
 }
