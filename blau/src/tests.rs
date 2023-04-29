@@ -19,22 +19,22 @@ mod tests {
 
         let config = Config::from_env();
 
-        assert_eq!(config.server_port, "8080");
+        assert_eq!(config.http_port, "8080");
         assert_eq!(
             config.client_id,
             ClientId::new("test_client_id".to_string())
         );
         assert_eq!(
-            config.client_secret.unwrap().secret(),
+            config.openid_client_secret.unwrap().secret(),
             ClientSecret::new("test_client_secret".to_string()).secret()
         );
         assert_eq!(
-            config.issuer_url,
+            config.openid_issuer_url,
             IssuerUrl::new("https://example.com".to_string()).unwrap()
         );
         assert_eq!(config.jwt_secret_key, "test_jwt_secret_key");
         assert_eq!(
-            config.secret_key.master(),
+            config.actix_secret_key.master(),
             actix_web::cookie::Key::from(&[65; 64]).master()
         );
     }

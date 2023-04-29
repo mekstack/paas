@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     let jwt = jwt::JwtEncoder::new(config.jwt_secret_key);
 
     let provider_metadata =
-        CoreProviderMetadata::discover_async(config.issuer_url, async_http_client)
+        CoreProviderMetadata::discover_async(config.openid_issuer_url, async_http_client)
             .await
             .expect("Provider metadata discovery failed");
 
@@ -31,18 +31,18 @@ async fn main() -> std::io::Result<()> {
 
     let client = CoreClient::from_provider_metadata(
         provider_metadata,
-        config.client_id,
-        config.client_secret,
+        config.openid_client_id,
+        config.openid_client_secret,
     );
 
-    let server_url = format!("0.0.0.0:{}", config.server_port);
+    let server_url = format!("0.0.0.0:{}", config.http_port);
 
     log::info!("Starting actix server on {}", server_url);
     HttpServer::new(move || {
         App::new()
             .wrap(SessionMiddleware::new(
                 CookieSessionStore::default(),
-                config.secret_key.clone(),
+                config.actix_secret_key.clone(),
             ))
             .app_data(web::Data::new(util.clone()))
             .app_data(web::Data::new(client.clone()))

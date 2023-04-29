@@ -22,31 +22,31 @@ spec:
         env:
         - name: RUST_LOG
           value: info
-        - name: REDIRECT_URLS
+        - name: VPNAAS_REDIRECT_URLS
           value: >-
             https://vpnaas.mekstack.ru/
             https://nataas.mekstack.ru/
-        - name: CLIENT_ID
+        - name: VPNAAS_CLIENT_ID
           valueFrom:
             secretKeyRef:
               name: blau
               key: client-id
-        - name: CLIENT_SECRET
+        - name: VPNAAS_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: blau
               key: client-secret
-        - name: ISSUER_URL
+        - name: VPNAAS_ISSUER_URL
           valueFrom:
             secretKeyRef:
               name: blau
               key: issuer-url
-        - name: SECRET_KEY
+        - name: VPNAAS_SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: blau
               key: secret-key
-        - name: JWT_SECRET_KEY
+        - name: VPNAAS_JWT_SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: mekstack

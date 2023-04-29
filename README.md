@@ -7,20 +7,16 @@ Service as a Service services
 ### Blau: **Bl**azingly fast **Au**th
 
 Provides an HTTP endpoint `/login` that authorizes user via OAuth provider and
-sets a cookie with a signed JWT token that can be used to access microservices.
+returns a signed JWT token that can be used to access other microservices.
 
 #### Configuration
 
 Configuration is performed by setting following environment variables:
 
--   `BLAU_PORT`: port for web server to listen on
--   `CLIENT_ID`: OpenID client id
--   `CLIENT_SECRET`: OpenID client secret
--   `ISSUER_URL`: OpenID issuer url
--   `JWT_SECRET_KEY`: key for signing JWTs
--   `SECRET_KEY`: key for session persistence Cookie encryption
-
-#### Run tests
-
-    cd blau
-    cargo test
+- `VPNAAS_HTTP_PORT`: port that the actix web server will listen on (default: 80)
+- `VPNAAS_CLIENT_ID`: OAuth client ID
+- `VPNAAS_CLIENT_SECRET`: OAuth client secret
+- `VPNAAS_ISSUER_URL`: OAuth issuer URL
+- `VPNAAS_JWT_SECRET_KEY`: secret key for signing users JWT access tokens
+- `VPNAAS_SECRET_KEY`: secret key for cookie encryption for session storage
+- `VPNAAS_REDIRECT_URLS`: space-separated list of allowed redirect URLs after successful login

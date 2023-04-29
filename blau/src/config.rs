@@ -3,25 +3,25 @@ use openidconnect::{ClientId, ClientSecret, IssuerUrl};
 use std::env;
 
 pub struct Config {
+    pub http_port: String,
+    pub openid_client_id: ClientId,
+    pub openid_client_secret: Option<ClientSecret>,
+    pub openid_issuer_url: IssuerUrl,
     pub jwt_secret_key: String,
-    pub client_id: ClientId,
-    pub client_secret: Option<ClientSecret>,
-    pub issuer_url: IssuerUrl,
-    pub secret_key: cookie::Key,
-    pub server_port: String,
+    pub actix_secret_key: cookie::Key,
     pub redirect_urls: Vec<String>,
 }
 
 impl Config {
     pub fn from_env() -> Config {
         Config {
-            server_port: get_env_var_or_default("PORT", "80"),
-            client_id: ClientId::new(get_env_var("CLIENT_ID")),
-            client_secret: Some(ClientSecret::new(get_env_var("CLIENT_SECRET"))),
-            issuer_url: IssuerUrl::new(get_env_var("ISSUER_URL")).unwrap(),
-            jwt_secret_key: get_env_var("JWT_SECRET_KEY"),
-            secret_key: cookie::Key::from(get_env_var("SECRET_KEY").as_bytes()),
-            redirect_urls: get_env_var("REDIRECT_URLS")
+            http_port: get_env_var_or_default("VPNAAS_HTTP_PORT", "80"),
+            openid_client_id: ClientId::new(get_env_var("VPNAAS_CLIENT_ID")),
+            openid_client_secret: Some(ClientSecret::new(get_env_var("VPNAAS_CLIENT_SECRET"))),
+            openid_issuer_url: IssuerUrl::new(get_env_var("VPNAAS_ISSUER_URL")).unwrap(),
+            jwt_secret_key: get_env_var("VPNAAS_JWT_SECRET_KEY"),
+            actix_secret_key: cookie::Key::from(get_env_var("VPNAAS_SECRET_KEY").as_bytes()),
+            redirect_urls: get_env_var("VPNAAS_REDIRECT_URLS")
                 .split_whitespace()
                 .filter(|url| !url.is_empty())
                 .map(|url| url.to_string())
