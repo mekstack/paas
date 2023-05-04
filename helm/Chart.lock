@@ -1,0 +1,6 @@
+dependencies:
+- name: saas-lib
+  repository: https://mekstack.github.io/saas/libcharts
+  version: "9999"
+digest: sha256:19cd9a760439125d21a8ac149a4c9e46ba1efa586c5cbe45ea2dedca8b67fc10
+generated: "2023-05-04T19:24:55.718413168+03:00"

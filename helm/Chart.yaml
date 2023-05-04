@@ -1,0 +1,11 @@
+apiVersion: v2
+name: saas
+description: Mekstack Service as a Service services
+type: application
+version: 9999
+home: https://github.com/mekstack/saas
+
+dependencies:
+- name: saas-lib
+  version: 9999
+  repository: https://mekstack.github.io/saas/libcharts

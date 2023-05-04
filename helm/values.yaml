@@ -1,0 +1,57 @@
+nameOverride: ""
+
+microservices:
+  _default:
+    name: ""
+    repository: mekstack/saas
+    pullPolicy: Never
+    tag: latest
+    securityContext: {}
+    env: []
+    labels: {}
+    selectorLabels: {}
+
+  blau:
+    env:
+    - name: RUST_LOG
+      value: info
+    - name: SAAS_REDIRECT_URLS
+      value: >-
+        https://vpnaas.mekstack.ru/
+        https://nataas.mekstack.ru/
+    - name: SAAS_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: blau
+          key: client-id
+    - name: SAAS_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: blau
+          key: client-secret
+    - name: SAAS_ISSUER_URL
+      valueFrom:
+        secretKeyRef:
+          name: blau
+          key: issuer-url
+    - name: SAAS_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: blau
+          key: secret-key
+    - name: SAAS_JWT_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: mekstack
+          key: jwt-secret-key
+
+ingress:
+  tls:
+  - secretName: tls
+    hosts:
+    - auth.mekstack.ru
+  hosts:
+  - host: auth.mekstack.ru
+    paths:
+    - path: /
+      service: blau

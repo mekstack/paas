@@ -1,0 +1,15 @@
+{{- range tuple "blau" }}
+{{- $_ := mergeOverwrite $ (dict "name" .) -}}
+{{ include "saas-lib.microservice" (
+        include "saas-lib.microservice-config"
+            (dict
+                "context" $
+                "name" .
+                "labels" (include "saas.labels" $ | fromYaml)
+                "selectorLabels" (include "saas.selectorLabels" $ | fromYaml)
+            )
+        | fromYaml
+    )
+}}
+---
+{{- end -}}
