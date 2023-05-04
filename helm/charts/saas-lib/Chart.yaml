@@ -1,0 +1,5 @@
+apiVersion: v2
+name: saas-lib
+description: A Helm library for mekstack services
+type: library
+version: 0.1.0
