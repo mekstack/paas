@@ -10,21 +10,22 @@ impl Util {
         Util { redirect_urls }
     }
 
-    fn is_valid_redirect_back_url(&self, url: &String) -> bool {
+    fn get_allowed_redirect_back_url(&self, url: &String) -> Option<String> {
         if url == "/" {
-            return true;
+            return Some(url.clone());
         }
 
         self.redirect_urls
             .iter()
-            .any(|allowed_url| url == allowed_url)
+            .find(|allowed_url| url.starts_with(*allowed_url))
+            .map(|s| s.clone())
     }
 
     pub fn get_redirect_back_url(&self, url: Option<String>) -> Result<String, actix_web::Error> {
         if let Some(url) = url {
-            match self.is_valid_redirect_back_url(&url) {
-                true => return Ok(url),
-                false => return Err(Forbidden("Invalid redirect_back_url")),
+            match self.get_allowed_redirect_back_url(&url) {
+                Some(allowed_url) => return Ok(allowed_url),
+                None => return Err(Forbidden("Invalid redirect_back_url")),
             }
         }
 
