@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: blau
-        image: mekstack/blau:latest
+        image: mekstack/saas/blau:latest
         imagePullPolicy: Never
         ports:
         - containerPort: 80
