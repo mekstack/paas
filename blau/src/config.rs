@@ -15,13 +15,13 @@ pub struct Config {
 impl Config {
     pub fn from_env() -> Config {
         Config {
-            http_port: get_env_var_or_default("VPNAAS_HTTP_PORT", "80"),
-            openid_client_id: ClientId::new(get_env_var("VPNAAS_CLIENT_ID")),
-            openid_client_secret: Some(ClientSecret::new(get_env_var("VPNAAS_CLIENT_SECRET"))),
-            openid_issuer_url: IssuerUrl::new(get_env_var("VPNAAS_ISSUER_URL")).unwrap(),
-            jwt_secret_key: get_env_var("VPNAAS_JWT_SECRET_KEY"),
-            actix_secret_key: cookie::Key::from(get_env_var("VPNAAS_SECRET_KEY").as_bytes()),
-            redirect_urls: get_env_var("VPNAAS_REDIRECT_URLS")
+            http_port: get_env_var_or_default("SAAS_HTTP_PORT", "80"),
+            openid_client_id: ClientId::new(get_env_var("SAAS_CLIENT_ID")),
+            openid_client_secret: Some(ClientSecret::new(get_env_var("SAAS_CLIENT_SECRET"))),
+            openid_issuer_url: IssuerUrl::new(get_env_var("SAAS_ISSUER_URL")).unwrap(),
+            jwt_secret_key: get_env_var("SAAS_JWT_SECRET_KEY"),
+            actix_secret_key: cookie::Key::from(get_env_var("SAAS_SECRET_KEY").as_bytes()),
+            redirect_urls: get_env_var("SAAS_REDIRECT_URLS")
                 .split_whitespace()
                 .filter(|url| !url.is_empty())
                 .map(|url| url.to_string())
