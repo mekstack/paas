@@ -6,6 +6,8 @@ metadata:
   labels:
     {{- toYaml .labels | nindent 4 }}
 spec:
+  securityContext:
+    {{- toYaml .securityContext | nindent 12 }}
   replicas: 1
   selector:
     matchLabels:
@@ -19,11 +21,8 @@ spec:
         - name: {{ .name }}
           image: {{ printf "%s/%s:%s" .repository .name .tag }}
           imagePullPolicy: {{ .pullPolicy }}
-          securityContext:
-            {{- toYaml .securityContext | nindent 12 }}
           ports:
-            - name: http
-              containerPort: 80
+            - containerPort: 80
               protocol: TCP
           env:
             {{- toYaml .env | nindent 12 }}
@@ -35,11 +34,11 @@ metadata:
   labels:
     {{- toYaml .labels | nindent 4 }}
 spec:
+  type: ClusterIP
   ports:
     - port: 80
-      targetPort: http
+      targetPort: 80
       protocol: TCP
-      name: http
   selector:
     {{- toYaml .selectorLabels | nindent 4 }}
 {{- end -}}

@@ -2,12 +2,12 @@ apiVersion: v1
 entries:
   saas-lib:
   - apiVersion: v2
-    created: "2023-05-04T19:07:46.049538164+03:00"
+    created: "2023-09-17T21:31:00.971178543+03:00"
     description: A Helm library for mekstack services
-    digest: 1dc89fc8da56a7057724f79f52ed048cb54c007658501066fb4b0957055120f8
+    digest: 7874eb2d3159e9ac8a177f41dae6f30d435400df6201c50215bef58cb7ffd995
     name: saas-lib
     type: library
     urls:
-    - https://mekstack.github.io/saas/libcharts/saas-lib-9999.tgz
+    - https://mekstack.github.io/saas/libcharts/saas-lib/saas-lib-9999.tgz
     version: "9999"
-generated: "2023-05-04T19:07:46.049408271+03:00"
+generated: "2023-09-17T21:31:00.970548596+03:00"
